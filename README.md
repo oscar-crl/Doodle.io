@@ -3,8 +3,7 @@ Clone of Skribble.io
  
 ## Usage
  ```
- docker-compose build
- docker-compose up
+ npm start
  ```
 
 ## Stacks used
