@@ -1,0 +1,201 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+#gameBoard {
+  background-color: white;
+  top: 0;
+  left: 0;
+}
+
+.colorItem {
+  display: inline-block;
+  height: 48px;
+  width: 48px;
+  cursor: pointer;
+}
+
+.user {
+  font-weight: bold;
+}
+
+.user-connected {
+  font-weight: bold;
+  color: limegreen;
+}
+
+.user-win {
+  font-weight: bold;
+  color: gold;
+}
+
+#canvas-wrapper {
+  width: 800px;
+  height: 600px;
+  margin-bottom: 25px;
+}
+
+#containerDraw {
+  margin-right: 20px;
+}
+
+#containerChat {
+  padding: 4px;
+  border-radius: 2px;
+  background-color: white;
+  width: 300px;
+  height: 600px;
+  display: flex;
+}
+
+#containerInfo {
+  background-color: white;
+  margin-bottom: 20px;
+  width: 1315px;
+  border-radius: 2px;
+}
+
+#containerPlayers {
+  width: 175px;
+  height: 600px;
+  margin-right: 20px;
+}
+
+#list-player {
+  width: 100%;
+}
+
+.player-box {
+  padding: 4px;
+  border-radius: 2px;
+  background-color: white;
+  margin-bottom: 5px;
+}
+
+.player-box-me {
+  padding: 4px;
+  border-radius: 2px;
+  background-color: white;
+  color: #03A9F4;
+  margin-bottom: 5px;
+}
+
+#room-info {
+  display: flex;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 10px;
+}
+
+#room {
+  width: fit-content;
+  margin-right: 150px;
+}
+
+#word {
+  letter-spacing: 3px;
+}
+
+#chat-box {
+  background-color: white;
+  width: 100%;
+}
+
+#connect-room {
+  margin-right: 50px;
+}
+
+#rooms-list {
+  border-radius: 2px;
+  padding: 6px;
+  width: 250px;
+  height: 400px;
+  background-color: white;
+}
+
+#rooms-list hr {
+  margin: 6px;
+}
+
+.room-selected {
+  background-color: #c8e1ff;
+  border-radius: 4px;
+}
+
+#rooms-list-header {
+  padding: 6px;
+}
+
+#choose-room div {
+  padding: 5px;
+  cursor: pointer;
+}
+
+#choose-room div:nth-child(even) {
+  background-color: #f7f7f7;
+}
+
+#message-box {
+  overflow-y: auto;
+  height: 552px;
+}
+
+#message-box p {
+  padding: 5px;
+  margin-bottom: 0;
+}
+
+#message-box p:nth-child(even) {
+  background: #f7f7f7;
+}
+
+#chatTextField-box {
+  height: 40px;
+}
+
+.wait-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  z-index: 1;
+  width: inherit;
+  height: inherit;
+  background-color: rgba(0,0,0,0.4);
+  flex-direction: column;
+}
+
+
+.wait-box p {
+  font-size: 35px;
+}
+
+.selectWord {
+  display: inline-block;
+  margin: 8px;
+  padding-bottom: 2px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  font-size: 25px;
+  height: auto;
+  width: auto;
+  background-color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-check-label {
+  font-size: 20px !important;
+  color: white !important;
+}
