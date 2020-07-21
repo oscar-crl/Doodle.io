@@ -4,8 +4,6 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
 
-app.use(express.static(__dirname + '/public'));
-
 var room = require('./room');
 var player = require('./player');
 var utils = require('./utils');
@@ -50,13 +48,11 @@ io.on('connection', function (socket) {
             Rooms[socket['room']].clock += 1000;
             io.in(socket['room']).emit('clock', Rooms[socket['room']].clock);
         }, 1000);
-        setTimeout(() => {
-            if (Rooms[socket['room']].word) {
-                Rooms[socket['room']].hiddenWord = utils.hideWord(word.cleanString(), true);
-                socket.to(socket['room']).emit('word', Rooms[socket['room']].hiddenWord);
-            }
+        Rooms[socket['room']].hintTimeout = setTimeout(() => {
+            Rooms[socket['room']].hiddenWord = utils.hideWord(word.cleanString(), true);
+            socket.to(socket['room']).emit('word', Rooms[socket['room']].hiddenWord);
         }, 10000);
-        setTimeout(() => {
+        Rooms[socket['room']].skipTimeout = setTimeout(() => {
             Rooms[socket['room']].skipRound(io);
         }, 20000);
     });

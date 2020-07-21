@@ -1,6 +1,6 @@
 var fs = require("fs");
 var text = fs.readFileSync('./words.txt', "utf-8");
-const Words = text.split("\r\n");
+const Words = text.split("\n");
 
 exports.generateRdmWords = () => {
     let words = [];

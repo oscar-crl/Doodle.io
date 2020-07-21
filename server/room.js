@@ -11,6 +11,8 @@ class Room {
         this.words = [];
         this.clock = 0;
         this.clockInterval = '';
+        this.hintTimeout = '';
+        this.skipTimeout = '';
     }
 
     getRoles(player) {
@@ -37,6 +39,8 @@ class Room {
         this.switchRoles();
         this.clock = 0;
         clearInterval(this.clockInterval);
+        clearTimeout(this.hintTimeout);
+        clearTimeout(this.skipTimeout);
     }
 
     howManyPlayersFound() {
