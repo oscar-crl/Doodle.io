@@ -14,7 +14,7 @@ var Rooms = [];
 
 io.on('connection', function (socket) {
 
-    socket.on('drawing', (data) => socket.to(data.room).emit('drawing', data));
+    socket.on('drawing', (data) => socket.to(socket['room']).emit('drawing', data));
 
     socket.on('connection', (data) => {
         if (!data.room || !data.name)
@@ -46,12 +46,19 @@ io.on('connection', function (socket) {
         Rooms[socket['room']].hiddenWord = utils.hideWord(word.cleanString());
         socket.to(socket['room']).emit('word', Rooms[socket['room']].hiddenWord);
         socket.emit('word', word);
+        Rooms[socket['room']].clockInterval = setInterval(() => {
+            Rooms[socket['room']].clock += 1000;
+            io.in(socket['room']).emit('clock', Rooms[socket['room']].clock);
+        }, 1000);
         setTimeout(() => {
             if (Rooms[socket['room']].word) {
                 Rooms[socket['room']].hiddenWord = utils.hideWord(word.cleanString(), true);
                 socket.to(socket['room']).emit('word', Rooms[socket['room']].hiddenWord);
             }
-        }, 8000);
+        }, 10000);
+        setTimeout(() => {
+            Rooms[socket['room']].skipRound(io);
+        }, 20000);
     });
 
     socket.on('link', (data) => {

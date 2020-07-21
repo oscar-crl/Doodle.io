@@ -12,7 +12,7 @@ import Row from 'react-bootstrap/Row';
 
 function Game(props) {
 
-    const socket = io('http://localhost:3000');
+    const socket = io(process.env.REACT_APP_SERVER_URL);
     let current = {color: 'black', username: props.location.username, room: props.location.room};
 
     console.log("game: " + current.username + " : " + current.room);

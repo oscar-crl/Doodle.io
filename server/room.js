@@ -9,6 +9,8 @@ class Room {
         this.word = '';
         this.hiddenWord = '';
         this.words = [];
+        this.clock = 0;
+        this.clockInterval = '';
     }
 
     getRoles(player) {
@@ -23,13 +25,18 @@ class Room {
 
     checkEndRound(io) {
         if (this.howManyPlayersFound() === this.players.length - 1) {
-            this.players.forEach(player => {
-                player.foundWord = false;
-            });
-            io.in(this.name).emit('chat', {text: this.word, end: true});
-            this.switchRoles();
-            console.log(this.players);
+            this.skipRound(io);
         }
+    }
+
+    skipRound(io) {
+        this.players.forEach(player => {
+            player.foundWord = false;
+        });
+        io.in(this.name).emit('chat', {text: this.word, end: true});
+        this.switchRoles();
+        this.clock = 0;
+        clearInterval(this.clockInterval);
     }
 
     howManyPlayersFound() {

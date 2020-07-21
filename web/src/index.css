@@ -97,9 +97,9 @@ code {
   padding: 10px;
 }
 
-#room {
-  width: fit-content;
-  margin-right: 150px;
+#room-info div {
+  margin-right: 50px;
+  margin-left: 25px;
 }
 
 #word {

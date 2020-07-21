@@ -14,7 +14,7 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
-        this.socket = io('http://localhost:3000');
+        this.socket = io(process.env.REACT_APP_SERVER_URL);
         this.socket.emit('rooms');
         this.socket.on('rooms', (rooms) => this.setState({rooms: rooms}));
     }

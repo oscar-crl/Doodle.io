@@ -42,7 +42,6 @@ class GameBoard extends React.Component {
     }
 
     drawLine(x0, y0, x1, y1, color, emit) {
-        //const {top, left} = this.canvasRef.getBoundingClientRect();
         this.ctx.beginPath();
         this.ctx.moveTo(x0, y0);
         this.ctx.lineTo(x1, y1);
@@ -55,11 +54,11 @@ class GameBoard extends React.Component {
             return;
         }
 
-        this.props.socket.emit('drawing', this.props.current.room, {
-            x0: x0 / this.w,
-            y0: y0 / this.h,
-            x1: x1 / this.w,
-            y1: y1 / this.h,
+        this.props.socket.emit('drawing', {
+            x0: x0,
+            y0: y0,
+            x1: x1,
+            y1: y1,
             color: color
         });
     }
@@ -67,7 +66,7 @@ class GameBoard extends React.Component {
     onMouseDown(e) {
         if (this.guess || this.state.wait)
             return;
-        //this.drawing = true;
+        this.drawing = true;
         this.props.current.x = e.clientX;
         this.props.current.y = e.clientY;
     }
@@ -77,14 +76,16 @@ class GameBoard extends React.Component {
             return;
         }
         this.drawing = false;
-        this.drawLine(this.props.current.x, this.props.current.y, e.clientX, e.clientY, this.props.current.color, true);
+        const {top, left} = this.canvasRef.getBoundingClientRect();
+        this.drawLine(this.props.current.x - left, this.props.current.y - top, e.clientX - left, e.clientY - top, this.props.current.color, true);
     }
 
     onMouseMove(e) {
         if (!this.drawing) {
             return;
         }
-        this.drawLine(this.props.current.x, this.props.current.y, e.clientX, e.clientY, this.props.current.color, true);
+        const {top, left} = this.canvasRef.getBoundingClientRect();
+        this.drawLine(this.props.current.x - left, this.props.current.y - top, e.clientX - left, e.clientY - top, this.props.current.color, true);
         this.props.current.x = e.clientX;
         this.props.current.y = e.clientY;
     }
