@@ -12,7 +12,7 @@ class GameBoard extends React.Component {
         this.guess = true;
         this.playerDrawing = '';
         this.words = [];
-        this.state = {wait: false, link: true};
+        this.state = {wait: false};
     }
 
     componentDidMount() {
@@ -23,6 +23,7 @@ class GameBoard extends React.Component {
         this.props.socket.on('drawing', this.onDrawingEvent.bind(this));
         this.props.socket.on('guess', (player) => {
             this.guess = true;
+            this.drawing = false;
             this.playerDrawing = player;
             this.setState({wait: true});
         });
@@ -30,27 +31,27 @@ class GameBoard extends React.Component {
             this.guess = false;
             this.words = words;
             this.setState({wait: true});
-            console.log('draw ' + this.words);
+            this.selectTimeout = setTimeout(() => {
+                this.sendWord(this.words[Math.floor(Math.random() * Math.floor(3))]);
+            }, 10000);
         });
-        this.props.socket.on('word', (word) => {
-            console.log(word);
+        this.props.socket.on('word', () => {
             this.setState({wait: false});
         });
-        this.props.socket.on('link', () => {
-            this.setState({link: true});
-        });
+        this.props.socket.on('clear', () => this.clearBoard());
     }
 
-    drawLine(x0, y0, x1, y1, color, emit) {
+    drawLine(x0, y0, x1, y1, size, color, emit) {
         this.ctx.beginPath();
         this.ctx.moveTo(x0, y0);
         this.ctx.lineTo(x1, y1);
         this.ctx.strokeStyle = color;
-        this.ctx.lineWidth = 2;
+        this.ctx.lineWidth = size;
+        this.ctx.lineCap = 'round';
         this.ctx.stroke();
         this.ctx.closePath();
 
-        if (!emit) {
+        if (!emit || this.guess) {
             return;
         }
 
@@ -59,6 +60,7 @@ class GameBoard extends React.Component {
             y0: y0,
             x1: x1,
             y1: y1,
+            size: size,
             color: color
         });
     }
@@ -77,7 +79,7 @@ class GameBoard extends React.Component {
         }
         this.drawing = false;
         const {top, left} = this.canvasRef.getBoundingClientRect();
-        this.drawLine(this.props.current.x - left, this.props.current.y - top, e.clientX - left, e.clientY - top, this.props.current.color, true);
+        this.drawLine(this.props.current.x - left, this.props.current.y - top, e.clientX - left, e.clientY - top, this.props.current.toolSize, this.props.current.color, true);
     }
 
     onMouseMove(e) {
@@ -85,15 +87,15 @@ class GameBoard extends React.Component {
             return;
         }
         const {top, left} = this.canvasRef.getBoundingClientRect();
-        this.drawLine(this.props.current.x - left, this.props.current.y - top, e.clientX - left, e.clientY - top, this.props.current.color, true);
+        this.drawLine(this.props.current.x - left, this.props.current.y - top, e.clientX - left, e.clientY - top, this.props.current.toolSize, this.props.current.color, true);
         this.props.current.x = e.clientX;
         this.props.current.y = e.clientY;
     }
 
     throttle(callback, delay) {
-        var previousCall = new Date().getTime();
+        let previousCall = new Date().getTime();
         return function () {
-            var time = new Date().getTime();
+            const time = new Date().getTime();
 
             if ((time - previousCall) >= delay) {
                 previousCall = time;
@@ -103,17 +105,17 @@ class GameBoard extends React.Component {
     }
 
     onDrawingEvent(data) {
-        this.drawLine(data.x0, data.y0, data.x1, data.y1, data.color);
+        this.drawLine(data.x0, data.y0, data.x1, data.y1, data.size, data.color);
     }
 
     sendWord(word) {
+        clearTimeout(this.selectTimeout);
         this.props.socket.emit('word', word);
         this.setState({wait: false});
     }
 
     selectWord() {
-        this.ctx.fillStyle = "white";
-        this.ctx.fillRect(0, 0, this.canvasRef.width, this.canvasRef.height);
+        this.clearBoard();
         return <div className={"wait-box"} id={"choose-word"}><p>Choose a word to draw!</p>
             <div>
                 <div className={"selectWord"} onClick={this.sendWord.bind(this, this.words[0])}>{this.words[0]}</div>
@@ -124,21 +126,20 @@ class GameBoard extends React.Component {
     }
 
     waitWordSelect() {
-        this.ctx.fillStyle = "white";
-        this.ctx.fillRect(0, 0, this.canvasRef.width, this.canvasRef.height);
+        this.clearBoard();
         return <div className={"wait-box"}><p id={"wait-player"}>{this.playerDrawing} is choosing a word</p></div>
     }
 
-    waitLink() {
-        return <div className={"wait-box"}><p>Please connect mobile to start playing</p></div>
+    clearBoard() {
+        this.ctx.fillStyle = "white";
+        this.ctx.fillRect(0, 0, this.canvasRef.width, this.canvasRef.height);
     }
 
     render() {
         return (
             <div id={"canvas-wrapper"}>
-                {!this.state.link ? this.waitLink() : ''}
-                {this.state.wait && this.state.link && this.words && this.guess ? this.waitWordSelect() : ''}
-                {this.state.wait && this.state.link && !this.guess ? this.selectWord() : ''}
+                {this.state.wait && this.words && this.guess ? this.waitWordSelect() : ''}
+                {this.state.wait && !this.guess ? this.selectWord() : ''}
                 <canvas id={"gameBoard"} width="800" height="600"
                         ref={(canvas) => {
                             this.canvasRef = canvas;

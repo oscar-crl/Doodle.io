@@ -20,9 +20,20 @@ code {
 
 .colorItem {
   display: inline-block;
+  height: 30px;
+  width: 30px;
+  cursor: pointer;
+}
+
+.colorItem:hover {
+  border: 2px solid #000;
+}
+
+#selected-color {
+  border-radius: 2px;
   height: 48px;
   width: 48px;
-  cursor: pointer;
+  margin-right: 8px;
 }
 
 .user {
@@ -37,6 +48,22 @@ code {
 .user-win {
   font-weight: bold;
   color: gold;
+}
+
+#containerTools {
+  display: flex;
+}
+
+#colors-list {
+  margin-right: 12px;
+}
+
+.tool {
+  border-radius: 2px;
+  height: 48px;
+  width: 48px;
+  background-color: white;
+  margin-right: 8px;
 }
 
 #canvas-wrapper {
@@ -136,9 +163,18 @@ code {
   padding: 6px;
 }
 
+#choose-room {
+  overflow-y: scroll;
+  height: 340px;
+}
+
 #choose-room div {
   padding: 5px;
   cursor: pointer;
+}
+
+.spacing-v {
+  height: 48px;
 }
 
 #choose-room div:nth-child(even) {

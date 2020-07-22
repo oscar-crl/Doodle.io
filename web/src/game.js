@@ -2,7 +2,7 @@ import React from "react";
 import GameBoard from "./gameboard";
 import Chat from "./chat";
 import ChatSend from "./chatTextField";
-import SelectColors from "./color";
+import Tools from "./tools";
 import InfoGame from "./info";
 import ListPlayer from "./players";
 import io from "socket.io-client";
@@ -13,7 +13,7 @@ import Row from 'react-bootstrap/Row';
 function Game(props) {
 
     const socket = io(process.env.REACT_APP_SERVER_URL);
-    let current = {color: 'black', username: props.location.username, room: props.location.room};
+    let current = {color: 'rgb(0,0,0)', toolSize: 2, username: props.location.username, room: props.location.room};
 
     console.log("game: " + current.username + " : " + current.room);
 
@@ -27,7 +27,7 @@ function Game(props) {
             <ListPlayer socket={socket} current={current}/>
             <div id={"containerDraw"}>
                 <GameBoard socket={socket} current={current}/>
-                <SelectColors current={current}/>
+                <Tools socket={socket} current={current}/>
             </div>
             <div id={"containerChat"}>
                 <div id={"chat-box"}>
