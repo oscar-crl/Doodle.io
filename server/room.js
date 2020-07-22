@@ -9,20 +9,10 @@ class Room {
         this.word = '';
         this.hiddenWord = '';
         this.words = [];
-        this.clock = 0;
+        this.clock = 60000;
         this.clockInterval = '';
         this.hintTimeout = '';
         this.skipTimeout = '';
-    }
-
-    getRoles(player) {
-        player = this.players.find(p => p.name === player);
-        if (player === this.players[this.drawing]) {
-            player.link.emit('draw', this.words);
-        } else {
-            player.link.emit('guess', this.players[this.drawing].name);
-        }
-        player.socket.emit('link');
     }
 
     checkEndRound(io) {
@@ -37,7 +27,7 @@ class Room {
         });
         io.in(this.name).emit('chat', {text: this.word, end: true});
         this.switchRoles();
-        this.clock = 0;
+        this.clock = 60000;
         clearInterval(this.clockInterval);
         clearTimeout(this.hintTimeout);
         clearTimeout(this.skipTimeout);
@@ -83,10 +73,8 @@ class Room {
         this.players.forEach(player => {
             if (player === this.players[this.drawing]) {
                 player.socket.emit('draw', this.words);
-                player.link ? player.link.emit('draw', this.words) : null;
             } else {
                 player.socket.emit('guess', this.players[this.drawing].name);
-                player.link ? player.link.emit('guess', this.players[this.drawing].name) : null;
             }
         });
     }

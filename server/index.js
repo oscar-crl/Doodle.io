@@ -45,21 +45,16 @@ io.on('connection', function (socket) {
         socket.to(socket['room']).emit('word', Rooms[socket['room']].hiddenWord);
         socket.emit('word', word);
         Rooms[socket['room']].clockInterval = setInterval(() => {
-            Rooms[socket['room']].clock += 1000;
+            Rooms[socket['room']].clock -= 1000;
             io.in(socket['room']).emit('clock', Rooms[socket['room']].clock);
         }, 1000);
         Rooms[socket['room']].hintTimeout = setTimeout(() => {
             Rooms[socket['room']].hiddenWord = utils.hideWord(word.cleanString(), true);
             socket.to(socket['room']).emit('word', Rooms[socket['room']].hiddenWord);
-        }, 10000);
+        }, 30000);
         Rooms[socket['room']].skipTimeout = setTimeout(() => {
             Rooms[socket['room']].skipRound(io);
-        }, 20000);
-    });
-
-    socket.on('link', (data) => {
-        Rooms[socket['room']].players.find(p => p.name === data.user).link = socket;
-        Rooms[socket['room']].getRoles(data.user);
+        }, 60000);
     });
 
     socket.on('chat', (message) => {
@@ -77,6 +72,8 @@ io.on('connection', function (socket) {
             io.in(socket['room']).emit('chat', message);
         }
     });
+
+    socket.on('clear', () => io.in(socket['room']).emit('clear'));
 
     socket.on('room', () => {
         console.log(Rooms);
