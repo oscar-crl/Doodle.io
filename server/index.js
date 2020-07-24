@@ -46,7 +46,12 @@ io.on('connection', function (socket) {
             return;
         if (Rooms[socket['room']].players.length === 1) {
             Rooms[socket['room']].skipRound(io);
-            Rooms = Rooms.filter(r => r.name !== socket['room']);
+            let roomTmp = [];
+            Object.values(Rooms).forEach(room => {
+                if (room.name !== socket['room'])
+                    roomTmp[room.name] = room;
+            });
+            Rooms = roomTmp;
             io.emit('rooms', utils.getListOfRooms(Rooms));
             return;
         }
