@@ -23,6 +23,7 @@ io.on('connection', function (socket) {
             Rooms[data.room].words = utils.generateRdmWords();
             socket.join(data.room);
             socket['room'] = data.room;
+            socket['name'] = data.name;
             io.in(data.room).emit('chat', {user: data.name, connected: true});
             socket.emit('draw', Rooms[data.room].words);
             socket.emit('players', [{name: data.name, score: 0}]);
@@ -31,12 +32,33 @@ io.on('connection', function (socket) {
             Rooms[data.room].players.push(new player(socket, data.name, false));
             socket.join(data.room);
             socket['room'] = data.room;
+            socket['name'] = data.name;
             io.in(data.room).emit('chat', {user: data.name, connected: true});
             socket.emit('guess', Rooms[data.room].players[Rooms[data.room].drawing].name);
             if (Rooms[data.room].word)
                 socket.emit('word', Rooms[data.room].hiddenWord);
             io.in(data.room).emit('players', utils.getListOfPlayers(Rooms[data.room]));
         }
+    });
+
+    socket.on('disconnect', () => {
+        if (!Rooms[socket['room']])
+            return;
+        if (Rooms[socket['room']].players.length === 1) {
+            Rooms[socket['room']].skipRound(io);
+            Rooms = Rooms.filter(r => r.name !== socket['room']);
+            io.emit('rooms', utils.getListOfRooms(Rooms));
+            return;
+        }
+        if (Rooms[socket['room']].players[Rooms[socket['room']].drawing].name === socket['name']) {
+            Rooms[socket['room']].drawing -= 1;
+            Rooms[socket['room']].players = Rooms[socket['room']].players.filter(p => p.name !== socket['name']);
+            Rooms[socket['room']].skipRound(io);
+        } else {
+            Rooms[socket['room']].players = Rooms[socket['room']].players.filter(p => p.name !== socket['name']);
+        }
+        io.in(socket['room']).emit('chat', {user: socket['name'], disconnected: true});
+        io.in(socket['room']).emit('players', utils.getListOfPlayers(Rooms[socket['room']]));
     });
 
     socket.on('word', (word) => {
@@ -59,7 +81,7 @@ io.on('connection', function (socket) {
 
     socket.on('chat', (message) => {
         const tmpRoom = Rooms[socket['room']];
-        if (!message.user || Rooms[socket['room']].players.find(p => p.name === message.user).foundWord)
+        if (!message.user || !message.text || Rooms[socket['room']].players.find(p => p.name === message.user).foundWord)
             return;
         if (message.user !== tmpRoom.players[tmpRoom.drawing].name && message.text.cleanString() === tmpRoom.word.cleanString()) {
             io.in(socket['room']).emit('chat', {user: message.user, text: message.text, found: true});
@@ -67,7 +89,7 @@ io.on('connection', function (socket) {
             io.in(socket['room']).emit('players', utils.getListOfPlayers(Rooms[socket['room']]));
             Rooms[socket['room']].checkEndRound(io);
         } else if (message.user !== tmpRoom.players[tmpRoom.drawing].name && utils.compareWordsWithTolerance(message.text.cleanString(), tmpRoom.word.cleanString())) {
-            Rooms[socket['room']].players.find(p => p.name === message.user).socket.emit('chat', {text: message.text, close: true});
+            socket.emit('chat', {text: message.text, close: true});
         } else {
             io.in(socket['room']).emit('chat', message);
         }

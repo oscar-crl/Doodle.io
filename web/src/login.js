@@ -1,7 +1,6 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import {withRouter} from "react-router-dom";
 import io from "socket.io-client";
 
 class Login extends React.Component {
@@ -24,22 +23,21 @@ class Login extends React.Component {
     }
 
     handleSubmit(event) {
-        if (!this.state.name || !this.state.room)
+        if (!this.state.name || !this.state.room || !this.socket.connected)
             return;
-        this.props.history.push({
-            pathname: '/doodle.io',
-            username: this.state.name,
-            room: this.state.room
-        })
+        this.socket.disconnect();
+        this.props.onLogin({username: this.state.name, room: this.state.room});
         event.preventDefault();
     }
 
     selectRoom(name) {
+        this.state.rooms.find(r => r.active === true ? r.active = false : '');
+        this.state.rooms.find(r => r.name === name ? r.active = true : '');
         this.setState({room: name});
     }
 
     appendRoom(room, i) {
-        return <div key={i} onClick={this.selectRoom.bind(this, (room.name))}>{room.name} - {room.players}</div>;
+        return <div key={i} className={room.active ? 'active' : ''} onClick={this.selectRoom.bind(this, (room.name))}>{room.name} - {room.players}</div>;
     }
 
     roomExists() {
@@ -75,4 +73,4 @@ class Login extends React.Component {
     }
 }
 
-export default withRouter(Login)
+export default Login

@@ -13,7 +13,7 @@ import Row from 'react-bootstrap/Row';
 function Game(props) {
 
     const socket = io(process.env.REACT_APP_SERVER_URL);
-    let current = {color: 'rgb(0,0,0)', toolSize: 2, username: props.location.username, room: props.location.room};
+    let current = {color: 'rgb(0,0,0)', toolSize: 2, username: props.username, room: props.room};
 
     console.log("game: " + current.username + " : " + current.room);
 
@@ -21,7 +21,7 @@ function Game(props) {
 
     return <Container fluid>
         <Row className="justify-content-center">
-            <InfoGame socket={socket} current={current}/>
+            <InfoGame socket={socket} current={current} onDisconnect={props.onDisconnect}/>
         </Row>
         <Row className="justify-content-center">
             <ListPlayer socket={socket} current={current}/>

@@ -45,9 +45,24 @@ code {
   color: limegreen;
 }
 
+.user-disconnected {
+  font-weight: bold;
+  color: tomato;
+}
+
 .user-win {
   font-weight: bold;
   color: gold;
+}
+
+.user-close {
+  font-weight: bold;
+  color: #03A9F4;
+}
+
+.end-round {
+  font-weight: bold;
+  color: #282c34;
 }
 
 #containerTools {
@@ -64,6 +79,38 @@ code {
   width: 48px;
   background-color: white;
   margin-right: 8px;
+  cursor: pointer;
+}
+
+.tool i {
+  font-size: 32px;
+  padding-top: 8px;
+  height: 48px;
+  width: 48px;
+  text-align: center;
+}
+
+.tool:hover {
+  background-color: darkgray;
+}
+
+.tool.active {
+  background-color: #007bff;
+}
+
+#brush-size {
+  height: 200px;
+  min-width: auto;
+  margin-left: 80px;
+}
+
+.dropup {
+  margin-right: 8px;
+  align-self: center;
+}
+
+.MuiSlider-root {
+  color: #0062cc !important;
 }
 
 #canvas-wrapper {
@@ -103,7 +150,7 @@ code {
 }
 
 .player-box {
-  padding: 4px;
+  padding: 4px 4px 4px 10px;
   border-radius: 2px;
   background-color: white;
   margin-bottom: 5px;
@@ -126,11 +173,20 @@ code {
 
 #room-info div {
   margin-right: 50px;
-  margin-left: 25px;
+  margin-left: 10px;
+  min-width: 85px;
 }
 
 #word {
   letter-spacing: 3px;
+}
+
+#quit i {
+  cursor: pointer;
+}
+
+#quit i:hover {
+  color: tomato;
 }
 
 #chat-box {
@@ -171,6 +227,10 @@ code {
 #choose-room div {
   padding: 5px;
   cursor: pointer;
+}
+
+#choose-room div.active {
+  color: #03A9F4;
 }
 
 .spacing-v {

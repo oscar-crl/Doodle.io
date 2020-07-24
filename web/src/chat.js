@@ -11,8 +11,7 @@ class Chat extends React.Component {
     }
 
     componentDidMount() {
-        this.props.socket.on('chat', (data) => {
-            const message = {user: data.user, text: data.text, found: data.found, connected: data.connected, close: data.close, end: data.end};
+        this.props.socket.on('chat', (message) => {
             this.setState(state => ({
                 chatMessages: [...state.chatMessages, message]
             }));
@@ -23,6 +22,8 @@ class Chat extends React.Component {
     messageFormat(msg, i) {
         if (msg.connected)
             return <p key={i}><span className="user-connected">{msg.user} joined the game!</span></p>;
+        else if (msg.disconnected)
+            return <p key={i}><span className="user-disconnected">{msg.user} left the game.</span></p>;
         else if (msg.found)
             return <p key={i}><span className="user-win">{msg.user} found the word!</span></p>;
         else if (msg.close)
