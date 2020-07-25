@@ -18,3 +18,7 @@ then from the root dir where docker-compose.yml is:
  
  Web Client: **JavaScript - React JS**
  
+## Screenshots
+
+![Drawing](https://github.com/oscar-crl/Doodle.io/blob/master/screenshots/screenshot-drawing.png)
+![Word Selection](https://github.com/oscar-crl/Doodle.io/blob/master/screenshots/screenshot-word-selection.png)
